@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2><i class="fas fa-book me-2 text-primary"></i>{{ course.name }}</h2>
+        <p class="text-muted mb-0">{{ course.title }} | Taught by {{ course.faculty.get_full_name }}</p>
+    </div>
+    <div>
+        <span class="badge bg-primary">{{ course.class_associated }}</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-white">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#materials">
+                            <i class="fas fa-file-alt me-1"></i> Study Materials
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#assignments">
+                            <i class="fas fa-tasks me-1"></i> Assignments
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="materials">
+                        {% if study_materials %}
+                        <div class="list-group">
+                            {% for material in study_materials %}
+                            <div class="list-group-item border-0 mb-2 shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-file-pdf material-card file-icon me-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">{{ material.title }}</h6>
+                                            <small class="text-muted">Uploaded: {{ material.uploaded_at|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-primary" download>
+                                            <i class="fas fa-download me-1"></i> Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Study Materials</h5>
+                            <p class="text-muted">Your faculty hasn't uploaded any study materials for this course yet.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane fade" id="assignments">
+                        {% if assignments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Assignment</th>
+                                        <th>Due Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assignment in assignments %}
+                                    <tr>
+                                        <td>{{ assignment.title }}</td>
+                                        <td>{{ assignment.due_date|date:"M d, Y H:i" }}</td>
+                                        <td>
+                                            {% if assignment.id in submission_status %}
+                                                <span class="badge bg-success">Submitted</span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'submit_assignment' assignment.id %}" class="btn btn-sm btn-outline-primary">
+                                                {% if assignment.id in submission_status %}
+                                                    <i class="fas fa-eye me-1"></i> View
+                                                {% else %}
+                                                    <i class="fas fa-upload me-1"></i> Submit
+                                                {% endif %}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Assignments</h5>
+                            <p class="text-muted">Your faculty hasn't created any assignments for this course yet.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2 text-primary"></i>Course Details</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        <span><i class="fas fa-user-tie me-2 text-muted"></i>Faculty</span>
+                        <span>{{ course.faculty.get_full_name }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        <span><i class="fas fa-calendar-alt me-2 text-muted"></i>Duration</span>
+                        <span>{{ course.start_date|date:"M d, Y" }} - {{ course.end_date|date:"M d, Y" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        <span><i class="fas fa-chalkboard-teacher me-2 text-muted"></i>Total Classes</span>
+                        <span>{{ course.total_classes }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Your Progress</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Assignments Completed</span>
+                        <span>{{ completed_assignments }}/{{ total_assignments }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                             style="width: {{ progress_percentage }}%"
+                             aria-valuenow="{{ progress_percentage }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h2 class="text-primary">{{ progress_percentage }}%</h2>
+                    <p class="text-muted">Overall Completion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

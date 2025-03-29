@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Profile</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Basic Info -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label>First Name</label>
+                <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" required>
+            </div>
+            <div class="col-md-6">
+                <label>Last Name</label>
+                <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" required>
+            </div>
+        </div>
+
+        <!-- Profile Picture -->
+        <div class="mb-3">
+            <label>Profile Picture</label>
+            <div class="d-flex align-items-center mb-2">
+                {% if user.profile_pic %}
+                    <img src="{{ user.profile_pic.url }}" width="100" class="rounded-circle me-3">
+                    <label>
+                        <input type="checkbox" name="clear_image"> Remove current image
+                    </label>
+                {% else %}
+                    <span>No profile picture</span>
+                {% endif %}
+            </div>
+            <input type="file" class="form-control" name="profile_pic">
+        </div>
+
+        <!-- Student Class Selection -->
+        {% if user.is_student %}
+        <div class="mb-3">
+            <label>Your Class</label>
+            <select name="student_class" class="form-select" required>
+                <option value="">Select your class</option>
+                {% for class in available_classes %}
+                <option value="{{ class.id }}"
+                    {% if user.student_class.id == class.id %}selected{% endif %}>
+                    {{ class }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2><i class="fas fa-tachometer-alt me-2 text-primary"></i>Student Dashboard</h2>
+    {% if student_class %}
+
+        <p class="text-muted">Class: {{ student_class }}</p>
+    {% endif %}
+</div>
+
+{% if warning %}
+<div class="alert alert-warning">
+    <i class="fas fa-exclamation-triangle me-2"></i> {{ warning }}
+</div>
+{% endif %}
+
+{% if student_class %}
+<div class="row">
+    <!-- Courses Column -->
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-white">
+                <h5><i class="fas fa-book me-2 text-primary"></i>Your Courses</h5>
+            </div>
+            <div class="card-body">
+                {% if courses %}
+                <div class="list-group">
+                    {% for course in courses %}
+                    <div class="list-group-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5>{{ course.name }}</h5>
+                                <p class="mb-1 text-muted">Faculty: {{ course.faculty.get_full_name }}</p>
+                            </div>
+                            <span class="badge bg-primary">
+                                {{ course.assignment_set.count }} assignments
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> No courses found for your class
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignments Column -->
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-white">
+                <h5><i class="fas fa-tasks me-2 text-primary"></i>Recent Assignments</h5>
+            </div>
+            <div class="card-body">
+                {% if assignments %}
+                <div class="list-group">
+                    {% for assignment in assignments|slice:":5" %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6>{{ assignment.title }}</h6>
+                                <small class="text-muted">{{ assignment.course.name }}</small>
+                            </div>
+                            <div>
+                                {% if submission_status and assignment.id in submission_status.keys %}
+                                    {% if submission_status.assignment.id %}
+                                        <span class="badge bg-success">Submitted</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <small class="text-danger d-block mt-1">
+                            Due: {{ assignment.due_date|date:"M d, Y" }}
+                        </small>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="#" class="btn btn-sm btn-outline-primary w-100 mt-3">
+                    View All Assignments
+                </a>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> No assignments found
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

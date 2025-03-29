@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Faculty Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-tachometer-alt me-2 text-primary"></i>My Courses</h2>
+    <a href="{% url 'create_course' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Create Course
+    </a>
+</div>
+
+{% if courses %}
+<div class="row">
+    {% for course in courses %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card course-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="course-title">{{ course.name }}</h5>
+                    <span class="badge bg-primary">{{ course.class_associated }}</span>
+                </div>
+                <p class="text-muted mb-3">{{ course.title }}</p>
+                <div class="course-meta d-flex justify-content-between">
+                    <span><i class="far fa-calendar me-1"></i> {{ course.start_date|date:"M d" }} - {{ course.end_date|date:"M d" }}</span>
+                    <span><i class="fas fa-chalkboard-teacher me-1"></i> {{ course.total_classes }} classes</span>
+                </div>
+            </div>
+            <div class="card-footer bg-white border-0 pt-0">
+                <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-outline-primary w-100">
+                    <i class="fas fa-arrow-right me-1"></i> View Course
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card shadow">
+    <div class="card-body text-center py-5">
+        <i class="fas fa-book-open fa-3x text-muted mb-4"></i>
+        <h4 class="text-muted">No Courses Found</h4>
+        <p class="text-muted">You haven't created any courses yet. Get started by creating your first course.</p>
+        <a href="{% url 'create_course' %}" class="btn btn-primary mt-3">
+            <i class="fas fa-plus me-2"></i>Create Your First Course
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
