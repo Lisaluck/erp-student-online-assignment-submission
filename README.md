@@ -1,122 +1,119 @@
-1. First-Time Setup (For Beginners)
+# **EduManage - AI-Powered College ERP System**
 
-# 1. Open terminal (Linux/Mac) or Command Prompt/PowerShell (Windows)
-# 2. Clone the project
-git clone https://github.com/yourusername/edumanage.git
-cd edumanage
+## 🚀 **Overview**
 
-# 3. Create virtual environment
-python -m venv venv
+EduManage is an advanced AI-driven **College ERP System** designed to streamline academic workflows, enhance faculty productivity, and improve student learning experiences. The platform offers **AI-based grading**, **assignment submission**, and real-time faculty-student interaction to optimize education management.
 
-# 4. Activate it
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
+## ✨ **Key Features**
 
-# 5. Install requirements
-pip install -r requirements.txt
-2. Database Setup (Simple Way)
+### 🔹 **Role-Based Dashboards**
 
-# 1. Create database (SQLite already configured)
-python manage.py migrate
+- **Admin Panel:** Manage classes, courses, and faculty assignments.
+- **Faculty Dashboard:**
+  - View assigned classes and courses.
+  - Add assignments, study materials, and notices.
+  - Monitor student submissions with AI-generated grading.
+- **Student Dashboard:**
+  - Submit assignments via GitHub repository links.
+  - Access study materials and notices.
+  - View AI-evaluated grades instantly.
 
-# 2. Create admin account (follow prompts)
-python manage.py createsuperuser
-# (Enter username, email, password when asked)
-3. Run the Project
+### 🤖 **AI-Powered Features**
 
-# 1. Start development server
-python manage.py runserver
+- **AI-based Assignment Grading**: Automated and intelligent grading system for submitted assignments.
+- **Automated Notifications**: Students receive emails for new assignments, study materials, and notices.
 
-# 2. Open browser and go to:
-http://localhost:8000/dashboard
-4. For Faculty Accounts
-Go to admin panel: http://localhost:8000/admin
+### 🔒 **Secure Authentication**
 
-Login with your superuser credentials
+- Role-based login for **Admin, Faculty, and Students**.
+- Password encryption and secure session management.
 
-Click "Users" → Select a user → Under "Permissions" check:
+## 🛠 **Tech Stack**
 
-✅ "Staff status"
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Django, Django REST Framework
+- **Database:** SQLite (default, can be changed to MySQL/PostgreSQL for production)
+- **AI Integration:** AI-based grading system
+- **Deployment:** Can be deployed on **Vercel** (Frontend) & **Railway/Render** (Backend)
 
-✅ "Superuser status" (if full access needed)
+## ⚡ **Installation & Setup**
 
-Click "Save"
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-repo/edumanage.git
+   cd edumanage
+   ```
+2. **Create a virtual environment & activate it**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Run migrations**
+   ```bash
+   python manage.py migrate
+   ```
+5. **Create a superuser** (for Admin access)
+   ```bash
+   python manage.py createsuperuser
+   ```
+6. **Start the server**
+   ```bash
+   python manage.py runserver
+   ```
+7. **Access the application**
+   - Open `http://127.0.0.1:8000/` in your browser.
+   - Login with admin, faculty, or student credentials.
 
-5. Adding Test Data (Optional)
+## 📜 **API Endpoints (For Developers)**
 
-# Create sample courses/assignments
-python manage.py shell
-Then run in Python shell:
+| Endpoint            | Method | Description                |
+| ------------------- | ------ | -------------------------- |
+| `/api/login/`       | POST   | User authentication        |
+| `/api/courses/`     | GET    | List available courses     |
+| `/api/assignments/` | POST   | Faculty adds assignments   |
+| `/api/submissions/` | POST   | Student submits assignment |
+| `/api/grades/`      | GET    | Fetch AI-generated grades  |
+
+## 🚀 **Deployment on Vercel (Frontend) & Render/Railway (Backend)**
+
+### **Frontend Deployment (Vercel)**
+
+1. Install Vercel CLI
+   ```bash
+   npm install -g vercel
+   ```
+2. Deploy frontend (if using React/Next.js)
+   ```bash
+   vercel
+   ```
+
+### **Backend Deployment (Render/Railway)**
+
+1. Push code to GitHub.
+2. Create a new Django project on **Render/Railway**.
+3. Add necessary environment variables (e.g., `DATABASE_URL`, `SECRET_KEY`).
+4. Deploy and get the backend API URL.
+
+## 🎯 **Future Enhancements**
+
+- AI-based plagiarism detection for assignments.
+- Advanced analytics for student performance tracking.
+- Mobile app integration for on-the-go access.
+
+## 🤝 **Contributing**
+
+We welcome contributions! Feel free to fork this repository and submit a pull request.
+
+## 📩 **Contact**
+
+For queries or support, reach out via unstop 
+
+---
+
+### ⭐ **If you like this project, don't forget to give it a star!** 🌟
 
 
-from django.contrib.auth.models import User
-from core.models import Course, Assignment
-
-# Create test faculty
-faculty = User.objects.create_user('prof_x', 'x@school.com', 'test123')
-faculty.is_staff = True
-faculty.save()
-
-# Create test course
-course = Course.objects.create(name="Python Basics", faculty=faculty)
-
-# Create test assignment
-Assignment.objects.create(
-    course=course,
-    title="First Python Program",
-    description="Create Hello World program"
-)
-6. Student Flow (How to Use)
-Register at: http://localhost:8000/register
-
-Login at: http://localhost:8000/login
-
-Select your class in profile
-
-View dashboard: http://localhost:8000/dashboard
-
-Click "Submit" on any assignment
-
-Paste GitHub URL like: https://github.com/yourname/python-assignment
-
-7. Faculty Flow
-Login with faculty account
-
-Access dashboard: http://localhost:8000/faculty
-
-Create courses/assignments
-
-View submissions at: http://localhost:8000/course/1
-
-8. Troubleshooting
-If you see errors:
-
-
-# If database issues:
-python manage.py makemigrations
-python manage.py migrate
-
-# If package issues:
-pip install -r requirements.txt --force-reinstall
-
-# If server won't start:
-kill $(lsof -t -i:8000)  # Linux/Mac
-taskkill /F /PID $(netstat -ano | findstr 8000)  # Windows
-9. Daily Use Commands
-
-# Start work:
-source venv/bin/activate  # Activate environment
-python manage.py runserver
-
-# End work:
-deactivate  # Leave virtual environment
-This covers:
-✅ Installation
-✅ Account setup
-✅ Basic usage
-✅ Testing
-✅ Troubleshooting
-
-All features should now work including:
-
-Student assignment submission
